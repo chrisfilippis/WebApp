@@ -1,0 +1,63 @@
+﻿@using WebApp.Helpers
+@model WebApp.Models.Login
+@{
+    ViewBag.Title = "Index";
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+}
+
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" href="/Styles/common.css" media="all">
+</head>
+<body>
+    <div class="general login">
+        <h1 class="page-title">@Html.GetTextConstant("Login", @LanguageId, "Login")</h1>
+        <div class="main">
+            @using (Html.BeginForm())
+            { 
+                <div class="error">
+                    @Html.ValidationSummary(true, "Login was unsuccessful. Please correct the errors and try again.")
+                </div>
+    
+                <div class="login">
+                    <fieldset>
+                        @*<legend>Account Information</legend>*@
+                        <div>
+                            <div class="label">
+                                @Html.LabelFor(m => m.Email)
+                            </div>
+                            <div class="field">
+                                @Html.TextBoxFor(m => m.Email)
+                                <br />
+                                <div class="error">
+                                    @Html.ValidationMessageFor(m => m.Email)
+                                </div>
+                            </div>
+
+                            <div class="label">
+                                @Html.LabelFor(m => m.Password)
+                            </div>
+                            <div class="field">
+                                @Html.PasswordFor(m => m.Password)
+                                <br />
+                                <div class="error">
+                                    @Html.ValidationMessageFor(m => m.Password)
+                                </div>
+                            </div>
+                            <p>
+                                <input type="submit" value="Log In" />
+                            </p>
+                        </div>
+                        <div class="row">
+                            <a href="@Url.Action("Remind", "Home")">Υπενθύμιση</a>
+                        </div>
+                    </fieldset>
+                </div>
+            }
+        </div>
+    </div>
+</body>
+</html>
+

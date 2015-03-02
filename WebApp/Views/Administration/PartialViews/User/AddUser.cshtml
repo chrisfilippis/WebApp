@@ -1,0 +1,99 @@
+﻿@using WebApp.Helpers
+
+@{
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+    ViewBag.LanguageId = LanguageId;
+}
+
+@helper Field(string id, string fieldName, string text, string type = "text")
+{
+    <div class="label">
+        <label for="@id">@Helpers.GetTextConstant(string.Format("User_Lightbox_{0}", fieldName), ((ViewBag.LanguageId as int?) ?? 0), text)</label>
+    </div>
+    <div class="field">
+        <input id="@id" name="@fieldName" type="@type" />
+        <br />
+        <div class="error">&nbsp;</div>
+    </div>
+}
+
+@using (Html.BeginForm("AddUser", "Administration", FormMethod.Post, new { id = "add-user", enctype = "multipart/form-data" }))
+{   <a href="#" class="lightbox-close">&nbsp;</a> 
+    <div>
+        <div class="row title">
+            <span>@Helpers.GetTextConstant("User_AddLightbox_Title", LanguageId, "Προσθήκη νέου χρήστη")</span>
+        </div>
+        <div class="row">
+            <div class="col left">
+                @Field("username", "Username", "Username")
+            </div>
+            <div class="col right">
+                @Field("user-mail", "Email", "Email")
+            </div>
+        </div>
+        <div class="row">
+            <div class="col left">
+                @Field("user-firstname", "FirstName", "FirstName")
+            </div>
+            <div class="col right">
+                @Field("user-lastname", "LastName", "LastName")
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col left">
+                <div class="label">
+                    Group
+                </div>
+                <div class="field">
+                    @Html.DropDownList("Group")
+                    <br />
+                    <div class="error">&nbsp;</div>
+                </div>
+            </div>
+            <div class="col right">
+                <div class="label">
+                    <label for="user-active">@Helpers.GetTextConstant("User_Lightbox_Active", LanguageId, "Active")</label>
+                </div>
+                <div class="field">
+                    <select id="user-active" name="Active">
+                        <option value="0" selected>No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                    <br />
+                    <div class="error">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col right">
+                <span class="submit-btn">
+                    <input type="submit" value="@Helpers.GetTextConstant("User_Lightbox_AddBtn", LanguageId, "Προσθήκη")" />
+                </span>
+            </div>
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    $('#add-user').ajaxForm({
+        dataType: "json",
+        success: function (data) {
+            if (data.success == true) {
+                $('.lightbox').empty();
+                $('.lightbox').append(data.message);
+                setTimeout(function () {
+                    var elm = $('.admin-tabs li.active');
+                    ShowTab(elm);
+                    HideModal();
+                }, 3000);
+            }
+            else {
+                $('#add-user div.error').html('&nbsp;');
+                for (var i = 0; i < data.errors.length; i++) {
+                    var item = data.errors[i];
+                    $('#add-user input[name="' + item.field + '"]').parents('div.field').find('div.error').html(item.error);
+                }
+            }
+        }
+    });
+</script>

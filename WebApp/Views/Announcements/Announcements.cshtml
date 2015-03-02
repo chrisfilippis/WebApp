@@ -1,0 +1,33 @@
+﻿@model WebApp.Models.AnnouncementObject[]
+@{
+    ViewBag.Title = "Announcements";
+}
+
+<div class="comments announcements">
+    <h3></h3>
+    <ul>
+        @foreach (var announcement in Model)
+        {
+            <li>
+                <div class="announcement-title">
+                    <span><i>@announcement.PublishedDate.ToString("dd/MM/yyy")</i><i style="clear: both;">@announcement.UserName</i></span><br />
+                    <a href="#">
+                        <span>@announcement.Title</span>
+                    </a>
+                    <div class="announcement-content">
+                        @announcement.Content
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+    @* @if (Convert.ToInt32(HttpContext.Current.Session["UserGroupId"] ?? "0") == 1)
+    {
+        using (Html.BeginForm("AddAnnouncement", "Announcements", FormMethod.Post, new { id = "add-new-announcement", enctype = "multipart/form-data" }))
+        {
+        <textarea name="announcement"></textarea>
+        <input type="submit" name="add" value="Προσθήκη σχολίου" />
+        }
+    }*@
+</div>
+

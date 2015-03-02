@@ -1,0 +1,31 @@
+﻿@model WebApp.TextConstants[]
+@using WebApp.Helpers
+
+@{
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+    var page = (int)(ViewBag.Page ?? 0);
+    var pages = (int)(ViewBag.Pages ?? 0);
+}
+
+<div class="admin-list" data-type="textconstants">
+    <ul>
+        @foreach (var constant in Model)
+        {
+            <li data-prid="@constant.TextConstId">@Html.ActionLink(constant.TextConstName, "", "Profile", new { id = constant.TextConstId }, new { @data_editid = "edit_" + constant.TextConstId, title = constant.TextConstName })
+                <a href="Administration/DeleteTextConstant/@constant.TextConstId" class="delete" title="@Helpers.GetTextConstant("Admin_TxtConsant_Delete", LanguageId, "Διαγραφή λεκτικού")" data-prid="@constant.TextConstId">
+                    <img src="~/files/remove.png" width="16" height="16" />
+                </a>
+                <a href="#" data-view="Administration/EditTextConstant/@constant.TextConstId" title="@Helpers.GetTextConstant("Admin_TxtConsant_Edit", LanguageId, "Επεξεργασία Χρήστη")" class="edit" id="edit_@constant.TextConstId" data-prid="@constant.TextConstId">
+                    <img src="~/files/edit-button.png" width="16" height="16" />
+                </a>
+            </li> 
+        }
+    </ul>
+    <ul class="pager">
+        @for (var i = 0; i < pages; i++)
+        {
+            <li><a href="#" class="@(page == i ? "active" : "")" data-index="@i">@(i + 1)</a></li>
+        }
+
+    </ul>
+</div>

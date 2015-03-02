@@ -1,0 +1,70 @@
+﻿@model WebApp.Users
+@{
+    ViewBag.Title = "EditUser";
+}
+@using (Html.BeginForm("EditUser", "Administration", FormMethod.Post, new { id = "edit-user", enctype = "multipart/form-data" }))
+{   <a href="#" class="lightbox-close">&nbsp;</a>
+    <div>
+        <div class="row title">
+            <span>Επεξεργασία χρήστη</span>
+        </div>
+        <div class="label">
+            @Html.LabelFor(m => m.userEmail)
+        </div>
+        <div class="field">
+            @Html.TextBoxFor(m => m.userEmail)
+            <br />
+            <div class="error">&nbsp;</div>
+        </div>
+        <div class="label">
+            @Html.LabelFor(m => m.userFirstName)
+        </div>
+        <div class="field">
+            @Html.TextBoxFor(m => m.userFirstName)
+            <br />
+            <div class="error">&nbsp;</div>
+        </div>
+        <div class="label">
+            @Html.LabelFor(m => m.userLastName)
+        </div>
+        <div class="field">
+            @Html.TextBoxFor(m => m.userLastName)
+            <br />
+            <div class="error">&nbsp;</div>
+        </div>
+        <div class="label">
+            @Html.LabelFor(m => m.UserGroups.userGroupName)
+        </div>
+        <div class="field">
+            @Html.DropDownList("Group")
+            <br />
+            <div class="error">&nbsp;</div>
+        </div>
+        <div class="label">
+            @Html.LabelFor(m => m.userIsActive)
+        </div>
+        <div class="field">
+            @Html.CheckBoxFor(x => x.userIsActive)
+            <br />
+            <div class="error">&nbsp;</div>
+        </div>
+        <p>
+            <input type="submit" value="Add" />
+        </p>
+    </div>
+}
+<script type="text/javascript">
+    $('#edit-user').ajaxForm({
+        dataType: "json",
+        success: function (data) {
+            if (data.success == true) {
+                $('.lightbox').empty();
+                $('.lightbox').append(data.message);
+                setTimeout(function () { HideModal(); }, 1500);
+            }
+            else {
+                alert(data.message);
+            }
+        }
+    });
+</script>

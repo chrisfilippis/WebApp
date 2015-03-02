@@ -1,0 +1,31 @@
+﻿@model WebApp.Models.Welcome
+@using WebApp.Helpers
+@{
+    ViewBag.Title = "Welcome";
+    Layout = "~/Views/Layouts/Common.cshtml";
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+}
+
+<div class="general welcome">
+    <h1 class="page-title">@Helpers.GetTextConstant("Home_Welcome", @LanguageId, "welcome") @string.Format("{0} {1}", Model.User.userFirstName, Model.User.userLastName)</h1>
+    @*<div class="main-welcome">
+        <p>Καλώς ήρθατε στην εφαρμογή</p>
+    </div>*@
+    <div class="activity-container">
+        <h2>@Helpers.GetTextConstant("Home_Last_Actions", @LanguageId, "Τελευταίες κινήσεις")</h2>
+        <div class="activity">
+            <ul>
+                @foreach (var item in Model.ActivityItems)
+                {
+                    <li>@item.activityContent</li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="welcome-content">
+        <h3>@Helpers.GetTextConstant("Home_What_Is", @LanguageId, "Τί είναι το Netlab")</h3>
+        <p>
+            Ο ιστότοπος που δημιουργήθηκε, αποτελεί ένα διαδικτυακό τόπο ανάρτησης εργασιών και επικοινωνίας μεταξύ φοιτητών, επιβλεπόντων καθηγητών όσον αφορά στις εργασίες, τις εκδηλώσεις και τα νέα του εργαστηρίου. Αποτελεί επέκταση του ήδη υπάρχοντος ιστότοπου του εργαστηρίου: http://netlab.cs.unipi.gr/el.
+        </p>
+    </div>
+</div>

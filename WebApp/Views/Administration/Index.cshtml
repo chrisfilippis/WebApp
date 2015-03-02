@@ -1,0 +1,50 @@
+﻿@using WebApp.Helpers
+@{
+    ViewBag.Title = "Administration";
+    Layout = "~/Views/Layouts/Common.cshtml";
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+}
+@model WebApp.Projects[]
+@helper  CheckAnchor(int index)
+{
+    var qs = Request.QueryString["tab"];
+    if (qs == null && index == 1)
+    {
+    @:block;
+    }
+    else
+    {
+        if (qs != null && qs.ToString() == index.ToString())
+        {
+    @:block;
+    }
+        else
+        {
+    @:none;
+    }
+    }
+}
+
+@helper GetView()
+{
+    Html.RenderPartial("PartialViews/Projects", Model);
+}
+
+<div class="general project-main">
+    <div class="tabs">
+        <h2 class="element-invisible">Πρωτεύουσες καρτέλες</h2>
+        <ul class="tabs primary admin-tabs">
+            <li class="active"><a href="#" data-view="Administration/Projects" class="active">@Html.GetTextConstant("Administration_Tabs_Projects", @LanguageId, "Projects")<span class="element-invisible">(ενεργή καρτέλα)</span></a></li>
+            <li><a href="#" data-view="Administration/Users">@Html.GetTextConstant("Administration_Tabs_Users", @LanguageId, "Users")</a></li>
+            <li><a href="#" data-view="Administration/Announcements">@Html.GetTextConstant("Administration_Tabs_Announcements", @LanguageId, "Ανακοινώσεις")</a></li>
+            <li><a href="#" data-view="Administration/TextConstants">@Html.GetTextConstant("Administration_Tabs_TextConstants", @LanguageId, "TextConstants")</a></li>
+            <li><a href="#" data-view="Administration/Events">@Html.GetTextConstant("Administration_Tabs_Events", @LanguageId, "Events")</a></li>
+        </ul>
+    </div>
+    <h1 class="page-title">@Html.GetTextConstant("Administration_Tabs_Projects", @LanguageId, "Projects")</h1>
+    <div class="main">
+        @GetView()
+    </div>
+</div>
+@Scripts.Render("~/bundles/admin")
+@*<script src="~/Scripts/Admin.js"></script>*@

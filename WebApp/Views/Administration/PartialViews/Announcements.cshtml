@@ -1,0 +1,25 @@
+﻿@model WebApp.Announcements[]
+@using WebApp.Helpers
+
+@{
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+}
+
+<div class="admin-list" data-type="projects">
+    <span class="invite">
+        <a class="invite-btn" data-view="Administration/AddAnnouncement" href="#" title="Προσθήκη καινούριας ανακοίνωσης">
+            <img src="/files/add.png" width="32" height="32" />
+        </a>
+    </span>
+    <ul>
+        @foreach (var announcement in Model)
+        {
+            <li data-prid="@announcement.annId">@announcement.annTitle@*@Html.ActionLink(announcement.annTitle, "", "Project", new { id = announcement.annId }, new { title = announcement.annTitle })*@
+                <a href="Administration/DeleteAnnouncement/@announcement.annId" title="@Helpers.GetTextConstant("Admin_Announ_Delete", LanguageId, "Διαγραφή ανακοίνωσης")" class="delete" data-prid="@announcement.annId">
+                    <img src="~/files/remove.png" width="16" height="16" /></a>
+                <a href="#" data-view="Administration/EditAnnouncement/@announcement.annId" title="@Helpers.GetTextConstant("Admin_Announ_Edit", LanguageId, "Επεξεργασία ανακοίνωσης")" class="edit" data-prid="@announcement.annTitle">
+                    <img src="~/files/edit-button.png" width="16" height="16" /></a>
+            </li> 
+        }
+    </ul>
+</div>

@@ -1,0 +1,37 @@
+﻿@model WebApp.Models.ProjectList
+@using WebApp.Helpers
+@{
+    ViewBag.Title = "My Projects";
+    Layout = "~/Views/Layouts/Common.cshtml";
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+}
+
+<div class="general">
+    <h1 class="page-title">@Helpers.GetTextConstant("List_Title", @LanguageId, "My Projects")</h1>
+    <div class="main">
+        <table class="views-table cols-4">
+            <thead>
+                <tr>
+                    <th>@Helpers.GetTextConstant("List_Grid_Title", @LanguageId, "Τίτλος")</th>
+                    <th>@Helpers.GetTextConstant("List_Grid_Student", @LanguageId, "Συγγραφέας")</th>
+                    <th>@Helpers.GetTextConstant("List_Grid_Supervisor", @LanguageId, "Επιβλέπων")</th>
+                    <th>@Helpers.GetTextConstant("List_Grid_Year", @LanguageId, "Έτος")</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (var i = 0; i < Model.Projects.Count(); i++)
+                {
+                    var project = Model.Projects[i];
+                    var classname = i % 2 == 1 ? "odd" : "even";
+                    <tr class="@classname views-row-first views-row-last">
+                        <td>@Html.ActionLink(project.Project.prTitle, "", "Project", new { id = project.Project.prId.ToString() }, new { })</td>
+                        <td>@string.Join(",", project.Students.Select(x => x.userName).ToArray())</td>
+                        <td>@string.Join(",", project.Supervisors.Select(x => x.userName).ToArray())</td>
+                        <td>@project.Project.prInsertDate.Year.ToString()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

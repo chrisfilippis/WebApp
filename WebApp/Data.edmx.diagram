@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="45c9ebd86d344284b5e56507fa935e30" Name="Diagram1" ZoomLevel="87" >
+        <EntityTypeShape EntityType="Data.Comments" Width="1.5" PointX="5.875" PointY="4.5" />
+        <EntityTypeShape EntityType="Data.ProjectTypes" Width="1.5" PointX="11.125" PointY="0.5" />
+        <EntityTypeShape EntityType="Data.Projects" Width="1.5" PointX="8.5" PointY="0.5" />
+        <EntityTypeShape EntityType="Data.UserGroups" Width="1.5" PointX="3" PointY="0.5" />
+        <EntityTypeShape EntityType="Data.UserProjects" Width="1.5" PointX="5.625" PointY="0.5" />
+        <EntityTypeShape EntityType="Data.Users" Width="1.5" PointX="3" PointY="3.125" />
+        <AssociationConnector Association="Data.FK_cms_Comments_cms_Projects1" />
+        <AssociationConnector Association="Data.FK_cms_Comments_cms_Users1" />
+        <AssociationConnector Association="Data.FK_cms_Projects_cms_Project_Types1" />
+        <AssociationConnector Association="Data.FK_cms_User_Projects_cms_Projects1" />
+        <AssociationConnector Association="Data.FK_cms_Users_cms_User_Groups1" />
+        <AssociationConnector Association="Data.FK_cms_User_Projects_cms_Users1" />
+        <EntityTypeShape EntityType="Data.Announcements" Width="1.5" PointX="0.5" PointY="3.375" />
+        <AssociationConnector Association="Data.FK_cms_Announcements_cms_Users" />
+        <EntityTypeShape EntityType="Data.Activity" Width="1.5" PointX="23.375" PointY="3.625" />
+        <EntityTypeShape EntityType="Data.ExceptionLog" Width="1.5" PointX="21.25" PointY="1.125" />
+        <EntityTypeShape EntityType="Data.ActivityView" Width="1.5" PointX="25.5" PointY="3.625" />
+        <EntityTypeShape EntityType="Data.TextConstantValues" Width="1.5" PointX="25.75" PointY="1.125" />
+        <EntityTypeShape EntityType="Data.TextConstants" Width="1.5" PointX="23.25" PointY="1.125" />
+        <AssociationConnector Association="Data.FK_cms_Text_Constant_Values_cms_Text_Constants" />
+        <EntityTypeShape EntityType="Data.FileLookup" Width="1.5" PointX="8.625" PointY="6.625" />
+        <AssociationConnector Association="Data.FK_cms_File_Lookup_cms_Projects" />
+        <AssociationConnector Association="Data.FK_cms_File_Lookup_cms_Users" />
+        <EntityTypeShape EntityType="Data.Events" Width="1.5" PointX="11.25" PointY="4.75" />
+        <AssociationConnector Association="Data.FK_cms_Events_cms_Projects" />
+        <EntityTypeShape EntityType="Data.ProjectCategories" Width="2" PointX="11" PointY="2.75" />
+        <AssociationConnector Association="Data.FK_cms_Projects_cms_ProjectCategories" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,76 @@
+﻿@model WebApp.Models.TextConstant
+
+@using WebApp.Helpers
+
+@{
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+    ViewBag.LanguageId = LanguageId;
+}
+
+@helper Field(string id, string fieldName, string text, string value, string type = "text", bool readOnly = false)
+{
+    <div class="label">
+        <label for="@id">@Helpers.GetTextConstant(string.Format("Admin_TxtConst_Edit_{0}", fieldName), ((ViewBag.LanguageId as int?) ?? 0), text)</label>
+    </div>
+    <div class="field">
+        <input id="@id" name="@fieldName" type="@type" value="@value" @(readOnly ? "readonly" : "")/>
+        <br />
+        <div class="error">&nbsp;</div>
+    </div>
+}
+
+@using (Html.BeginForm("EditTextConstant", "Administration", FormMethod.Post, new { id = "edit-textconstant", enctype = "multipart/form-data" }))
+{   <a href="#" class="lightbox-close">&nbsp;</a> 
+    <div data-after-remove="Administration/EditTextConstant">
+        <div class="row title">
+            <span>Επεξεργασίας λεκτικού</span>
+        </div>
+        <div class="row">
+            <div class="col left">
+                @Field("Title", "Title", "Τίτλος", Model.Name)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col left">
+                @Field("grvalue", "grvalue", "Greek_Value", Model.TextConstantValues.Where(x => x.tConstValLangId == 1).Select(x => x.tConstValValue).FirstOrDefault())
+            </div>
+            <div class="col left">
+                @Field("envalue", "envalue", "English_Value", Model.TextConstantValues.Where(x => x.tConstValLangId == 2).Select(x => x.tConstValValue).FirstOrDefault())
+            </div>
+        </div>
+        <div class="row">
+            <div class="col left">
+                <input type="submit" value="Αλλαγή" />
+            </div>
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    var form = $('#edit-textconstant');
+    form.ajaxForm({
+        dataType: "json",
+        success: function (data) {
+            if (data.success == true) {
+                $('.lightbox').empty();
+                $('.lightbox').append(data.message);
+                setTimeout(function () {
+                    var elm = $('.admin-tabs li.active');
+                    HideModal();
+                    ShowTab(elm);
+                }, 3000);
+            }
+            else {
+                if (data.reload == true) {
+                    window.location.reload();
+                    return;
+                }
+
+                form.find('div.error').html('&nbsp;');
+                for (var i = 0; i < data.errors.length; i++) {
+                    var item = data.errors[i];
+                    form.find('#' + item.field).parents('div.field').find('div.error').html(item.error);
+                }
+            }
+        }
+    });
+</script>

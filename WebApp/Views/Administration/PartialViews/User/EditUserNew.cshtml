@@ -1,0 +1,117 @@
+﻿@model WebApp.Users
+@using WebApp.Helpers
+
+@{
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+    ViewBag.LanguageId = LanguageId;
+}
+
+@helper Field(string id, string fieldName, string text, string value = "", string type = "text")
+{
+    <div class="label">
+        <label for="@id">@Helpers.GetTextConstant(string.Format("User_Lightbox_{0}",fieldName),((ViewBag.LanguageId as int?) ?? 0) , text)</label>
+    </div>
+    <div class="field">
+        <input id="@id" name="@fieldName" type="@type" @(string.IsNullOrWhiteSpace(value) ? "" : "value=" + value) />
+        <br />
+        <div class="error">&nbsp;</div>
+    </div>
+}
+
+@helper ReadOnlyField(string id, string fieldName, string text, string value = "")
+{
+    <div class="label">
+        <label for="@id">@Helpers.GetTextConstant(string.Format("User_Lightbox_{0}",fieldName),((ViewBag.LanguageId as int?) ?? 0) , text)</label>
+    </div>
+    <div class="field">
+        <input id="@id" name="@fieldName" readonly="readonly" type="text" @(string.IsNullOrWhiteSpace(value) ? "" : "value=" + value) />
+        <br />
+        <div class="error">&nbsp;</div>
+    </div>
+}
+
+@helper DropDown(bool isActive, string fieldName, string id)
+{
+    var values = new Dictionary<int, string>() { { 0, "No" }, { 1, "Yes" } };
+    <select id="@id" name="@fieldName">
+        @foreach (var value in values)
+        {
+            <option value="@value.Key" @(isActive && value.Key == 1 ? "selected='selected'" : "")>@value.Value</option>
+        }
+    </select>
+    
+}
+
+@using (Html.BeginForm("EditUser", "Administration", FormMethod.Post, new { id = "edit-user", enctype = "multipart/form-data" }))
+{   <a href="#" class="lightbox-close">&nbsp;</a>
+    <div>
+        <div class="row title">
+            <span>@Helpers.GetTextConstant("User_EditLightbox_Title", LanguageId, "Επεξεργασία χρήστη")</span>
+        </div>
+        <div class="row">
+            <div class="col left">
+                @ReadOnlyField("userName", "userName", "userName", Model.userName)
+            </div>
+            <div class="col right">
+                @Field("userEmail", "userEmail", "userEmail", Model.userEmail)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col left">
+                @Field("userFirstName", "userFirstName", "userFirstName", Model.userFirstName)
+            </div>
+            <div class="col right">
+                @Field("userLastName", "userLastName", "userLastName", Model.userLastName)
+            </div>
+            <div class="row">
+                <div class="col left">
+                    <div class="label">
+                        @Html.LabelFor(m => m.UserGroups.userGroupName)
+                    </div>
+                    <div class="field">
+                        @Html.DropDownList("Group")
+                        <br />
+                        <div class="error">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="col right">
+                    <div class="label">
+                        @Html.LabelFor(m => m.userIsActive)
+                    </div>
+                    <div class="field">
+                        @DropDown(Model.userIsActive, "userIsActive", "userIsActive")
+                        @*@Html.DropDownListFor(x=>x.userIsActive,new []{0,1},)*@
+                        @*@Html.CheckBoxFor(x => x.userIsActive)*@
+                        <br />
+                        <div class="error">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col right">
+                    <span class="submit-btn">
+                        <input type="submit" value="Αποθήκευση" />
+                    </span>
+                </div>
+            </div>
+        </div>
+        @*<p>
+            <input type="submit" value="Add" />
+        </p>*@
+    </div>
+}
+<script type="text/javascript">
+    $('#edit-user').ajaxForm({
+        dataType: "json",
+        success: function (data) {
+            if (data.success == true) {
+                $('.lightbox').empty();
+                $('.lightbox').append(data.message);
+                setTimeout(function () { HideModal(); }, 1500);
+            }
+            else {
+                alert(data.message);
+            }
+        }
+    });
+</script>

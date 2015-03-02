@@ -1,0 +1,25 @@
+﻿@model WebApp.Events[]
+@using WebApp.Helpers
+
+@{
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+}
+
+<div class="admin-list" data-type="events">
+    <span class="invite">
+        <a class="invite-btn" data-view="Administration/AddEvent" href="#" title="Προσθήκη καινούριας Event">
+            <img src="/files/add.png" width="32" height="32" />
+        </a>
+    </span>
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li data-prid="@item.EventId">@item.EventTitle@*@Html.ActionLink(announcement.annTitle, "", "Project", new { id = announcement.annId }, new { title = announcement.annTitle })*@
+                <a href="Administration/DeleteEvent/@item.EventId" title="@Helpers.GetTextConstant("Admin_Events_Delete", LanguageId, "Διαγραφή Event")" class="delete" data-prid="@item.EventId">
+                    <img src="~/files/remove.png" width="16" height="16" /></a>
+                <a href="#" data-view="Administration/EditEvent/@item.EventId" title="@Helpers.GetTextConstant("Admin_Announ_Edit", LanguageId, "Επεξεργασία ανακοίνωσης")" class="edit" data-prid="@item.EventTitle">
+                    <img src="~/files/edit-button.png" width="16" height="16" /></a>
+            </li> 
+        }
+    </ul>
+</div>

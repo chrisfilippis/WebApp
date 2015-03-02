@@ -1,0 +1,30 @@
+﻿@model WebApp.Users[]
+@using WebApp.Helpers
+
+@{
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+}
+
+<div class="admin-list" data-type="users">
+    <span class="invite">
+        <a class="invite-btn" data-view="Administration/AddUser" href="#">
+            <img src="/files/add.png" width="32" height="32" />
+        </a>
+    </span>
+    <ul>
+        @foreach (var user in Model)
+        {
+            <li data-prid="@user.userId">@Html.ActionLink(user.userName, "", "Profile", new { id = user.userId }, new { title = user.userName })
+                <a href="Administration/DeleteUser/@user.userId" class="delete" title="@Helpers.GetTextConstant("Admin_User_Delete", LanguageId, "Διαγραφή χρήστη")" data-prid="@user.userId">
+                    <img src="~/files/remove.png" width="16" height="16" />
+                </a>
+                <a href="#" data-view="Administration/EditUser/@user.userId" title="@Helpers.GetTextConstant("Admin_User_Edit", LanguageId, "Επεξεργασία Χρήστη")" class="edit" data-prid="@user.userId">
+                    <img src="~/files/edit-button.png" width="16" height="16" />
+                </a>
+                <a href="#" data-view="Administration/ChangePassword/@user.userId" title="@Helpers.GetTextConstant("Admin_User_ChangePass", LanguageId, "Αλλαγή κωδικού")" class="edit" data-prid="@user.userId">
+                    <img src="~/files/key.png" width="16" height="16" />
+                </a>
+            </li> 
+        }
+    </ul>
+</div>

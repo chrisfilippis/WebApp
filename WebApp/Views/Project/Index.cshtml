@@ -1,0 +1,192 @@
+﻿@model WebApp.Models.Project
+@using WebApp.Helpers
+@{
+    ViewBag.Title = Model.Details.Project.prTitle;
+    Layout = "~/Views/Layouts/Common.cshtml";
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+}
+@helper  CheckAnchor(int index)
+{
+    var qs = Request.QueryString["tab"];
+    if (qs == null && index == 1)
+    {
+    @:block;
+    }
+    else
+    {
+        if (qs != null && qs.ToString() == index.ToString())
+        {
+    @:block;
+    }
+        else
+        {
+    @:none;
+    }
+    }
+}
+
+@helper  CheckIfHasProjectPermissions()
+{
+    var uid = 0;
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+
+    if (Context.Session["UserId"] == null)
+    {
+        return;
+    }
+
+    int.TryParse(Context.Session["UserId"].ToString(), out uid);
+    var qs = Request.QueryString["tab"];
+    if (Model.Details.Students.Union(Model.Details.Supervisors).Select(x => x.userId).Contains(uid))
+    {
+    <li><a href="#">@Helpers.GetTextConstant("Project_Page_Comments_Tab", LanguageId, "Σχόλια")</a></li>
+    <li><a href="#">@Helpers.GetTextConstant("Project_Page_UploadFile_Tab", LanguageId, "Ανέβασε αρχείο")</a></li>
+    }
+}
+<div class="general project-main">
+    <div class="tabs">
+        <h2 class="element-invisible">Πρωτεύουσες καρτέλες</h2>
+        <ul class="tabs primary">
+            <li class="active"><a href="#" class="active">@Helpers.GetTextConstant("Project_Page_Title", @LanguageId, "Περιγραφή")<span class="element-invisible">(ενεργή καρτέλα)</span></a></li>
+            @CheckIfHasProjectPermissions()
+        </ul>
+    </div>
+    <h1 class="page-title">@Html.DisplayFor(x => x.Details.Project.prTitle)</h1>
+    <div class="main" style="display:@CheckAnchor(1)">
+        <div class="project">
+            <div class="col summary">
+                <h3>@Helpers.GetTextConstant("Project_Page_Description", LanguageId, "Description")</h3>
+                <div class="description">
+                    @Html.DisplayFor(x => x.Details.Project.prDescription)
+                </div>
+            </div>
+            <div class="col">
+                <div class="users">
+                    <div class="supervisors">
+                        <h3>@Helpers.GetTextConstant("Project_Page_Supervisors", LanguageId, "Supervisors")</h3>
+                        <ul>
+                            @foreach (var supervisor in Model.Details.Supervisors)
+                            {
+                                <li>
+                                    @Html.ActionLink(supervisor.userName, "Index", "Profile", new { id = supervisor.userId }, new { title = string.Format("{0} {1}", supervisor.userFirstName, supervisor.userLastName) })
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="students">
+                        <h3>@Helpers.GetTextConstant("Project_Page_Students", LanguageId, "Students")</h3>
+                        <ul>
+                            @foreach (var student in Model.Details.Students)
+                            {
+                                <li title="@string.Format("{0} {1}", student.userFirstName, student.userLastName)">@student.userName</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="date">
+                    <h3>Date</h3>
+                    @string.Format("{0}/{1}/{2}", Model.Details.Project.prInsertDate.Day.ToString(), Model.Details.Project.prInsertDate.Month.ToString(), Model.Details.Project.prInsertDate.Year.ToString())
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main" style="display:@CheckAnchor(2)">
+        <div class="project">
+            <div class="comments">
+                <h3>@Helpers.GetTextConstant("Project_Page_Comments", LanguageId, "Comments")</h3>
+                <ul>
+                    @foreach (var comment in Model.Comments)
+                    {
+                        <li><span>
+                            <strong>@comment.Author.userName:</strong>
+                        </span>
+                            <br />
+                            <span>@comment.Comment.cContent</span>
+                            <span style="float: right; margin-top: -22px;">
+                                <i style="color: gray; font-size: small;">@comment.Comment.cInsertedDate.ToString("dd/MM/yyy")</i>
+                            </span>
+                            <br />
+                        </li>
+                    }
+                </ul>
+                @using (Html.BeginForm("AddComment", "Project", FormMethod.Post, new { id = "add-new-comment", enctype = "multipart/form-data" }))
+                {
+                    <textarea name="newcomment"></textarea>
+                    <input name="project" type="hidden" value="@Model.Details.Project.prId" />
+                    <input type="submit" name="add" value="@Helpers.GetTextConstant("Project_Page_Add_Comment", LanguageId, "Προσθήκη σχολίου")" />
+                        
+                    <script>
+
+                        $(function () {
+                            $('#add-new-comment').ajaxForm({
+                                dataType: "json",
+                                success: SubmitSuccesful,
+                                error: AjaxError
+                            });
+
+                            function AjaxError() {
+                                alert("Client Error");
+                            }
+
+                            function SubmitSuccesful(result, statusText) {
+                                if (result.success == true) {
+                                    window.location.href = '?tab=2'
+                                    //window.location.reload();
+                                }
+                                else {
+                                    alert(result.message);
+                                }
+
+                            }
+
+                        });
+                    </script>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="main" style="display:@CheckAnchor(3)">
+        <div class="upload">
+            <ul>
+                @foreach (var file in Model.Files)
+                {
+                    <li><a href="@file.Path" target="_blank">@string.Format("Από τον χρήστη {0} στις {1}", file.User, file.Datetime.ToString("dd-MMM-yy"))</a></li>
+                }
+            </ul>
+
+            @using (Html.BeginForm("AjaxUpload", "Project", FormMethod.Post, new { id = "upload", enctype = "multipart/form-data" }))
+            {
+                <input id="report" name="report" type="file" />
+                <input name="project" type="hidden" value="@Model.Details.Project.prId" />
+                <input id="uploadfile" type="submit" value="@Helpers.GetTextConstant("Project_Page_Upload_File_Button", @LanguageId, "Upload File")" />
+                <script>
+
+                    $(function () {
+                        $('#upload').ajaxForm({
+                            dataType: "json",
+                            success: SubmitSuccesful,
+                            error: AjaxError
+                        });
+
+                        function AjaxError() {
+                            alert("Client Error");
+                        }
+
+                        function SubmitSuccesful(result, statusText) {
+                            if (result.success == true) {
+                                window.location.href = '?tab=3'
+                                //window.location.reload();
+                            }
+                            else {
+                                alert(result.message);
+                            }
+
+                        }
+
+                    });
+                </script>
+            }
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/Project.js"></script>

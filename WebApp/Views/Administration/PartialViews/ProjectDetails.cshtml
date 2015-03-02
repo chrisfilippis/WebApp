@@ -1,0 +1,39 @@
+﻿@model WebApp.Projects
+@{
+    ViewBag.Title = "ProjectDetails";
+}
+
+@if (Model == null)
+{
+    <h2>ProjectDetails</h2>
+}
+else
+{
+    using (Html.BeginForm("ProjectDetails", "Administration", FormMethod.Post, new { id = "edit-project", enctype = "multipart/form-data" }))
+    {    <div>
+        <div class="label">
+            <label for="prTitle">Email</label>
+        </div>
+        <div class="field">
+            @Html.TextBoxFor(x => Model.prTitle, new { });
+            <br />
+            @Html.ValidationMessageFor(x => Model.prTitle, new { id = "prTitle", @class = "error" });
+            @*<div class="error">
+            </div>*@
+        </div>
+
+        <div class="label">
+            Group
+        </div>
+        <div class="field">
+            @Html.DropDownList("Group")
+            <br />
+            @*<div class="error">
+            </div>*@
+        </div>
+        <p>
+            <input type="submit" value="Update" />
+        </p>
+    </div>
+    }
+}

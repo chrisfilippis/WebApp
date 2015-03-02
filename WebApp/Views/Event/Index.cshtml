@@ -1,0 +1,36 @@
+﻿@model WebApp.Events
+@using WebApp.Helpers
+@{
+    ViewBag.Title = Model.EventTitle;
+    Layout = "~/Views/Layouts/Common.cshtml";
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+}
+
+<div class="general project-main">
+    <h1 class="page-title">@Html.DisplayFor(x => x.EventTitle)</h1>
+    <div class="main">
+        <div class="project">
+            <div class="col summary">
+                <h3>@Helpers.GetTextConstant("Events_Page_Description", LanguageId, "Description")</h3>
+                <div class="description">
+                    @Html.DisplayFor(x => x.EventDescription)
+                </div>
+            </div>
+            <div class="col">
+                @if (!string.IsNullOrWhiteSpace(Model.EventLocation))
+                {
+                    <div class="date" style="margin-bottom: 10px;">
+                        <h3>@Helpers.GetTextConstant("Events_Page_Place", LanguageId, "Τοποθεσία")</h3>
+                        @Model.EventLocation
+                    </div>
+                }
+                <div class="date" style="margin-bottom: 10px;">
+                    <h3>Date</h3>
+                    @Model.EventDate.ToString("dd/MM/yyyy")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+</script>

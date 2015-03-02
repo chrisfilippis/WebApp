@@ -1,0 +1,34 @@
+﻿@{
+    ViewBag.Title = "ImageForm";
+}
+
+
+@using (Html.BeginForm("SaveImage", "Profile", FormMethod.Post, new { id = "save-image", enctype = "multipart/form-data" }))
+{
+    <a href="#" class="lightbox-close">&nbsp;</a>
+    <input name="image" type="file" />
+    <input name="add" type="submit" onclick="ShowModal();" value="Ανέβασε εικόνα" />
+    <div class="error"></div>
+    <script type="text/javascript">
+        $('#save-image').ajaxForm({
+            dataType: "json",
+            success: function (data) {
+                //alert('HideModal')
+                HideModal();
+                if (data.success == false) {
+                    if (typeof (data.message) != 'undefined' || data.message != "") {
+                        $('.lightbox div.error').text('error').show();
+                        return;
+                    }
+
+                    return;
+                }
+
+                if (data.success == true) {
+                    window.location.reload();
+                }
+            },
+            error: function () { $('.lightbox div.error').text('error').show(); }
+        });
+    </script>
+}

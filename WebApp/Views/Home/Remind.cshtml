@@ -1,0 +1,47 @@
+﻿@using WebApp.Helpers
+@model WebApp.Models.Remind
+@{
+    ViewBag.Title = "Index";
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+}
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" href="/Styles/common.css" media="all">
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/common")
+    @Scripts.Render("~/bundles/validation")
+</head>
+<body>
+    <div class="general login">
+        <h1 class="page-title">@Html.GetTextConstant("RemindPassword_Title", @LanguageId, "RemindPassword")</h1>
+        <div class="main">
+            @using (Html.BeginForm())
+            { 
+                <div class="login">
+                    <fieldset>
+                        @*<legend>Account Information</legend>*@
+                        <div>
+                            <div class="label">
+                                @Html.LabelFor(m => m.Email)
+                            </div>
+                            <div class="field">
+                                @Html.TextBoxFor(m => m.Email)
+                                <br />
+                                <div class="error">
+                                    @Html.ValidationMessageFor(m => m.Email)
+                                </div>
+                            </div>
+                            <p>
+                                <input type="submit" value="Change" />
+                            </p>
+                        </div>
+                    </fieldset>
+                </div>
+            }
+        </div>
+    </div>
+</body>
+</html>
+

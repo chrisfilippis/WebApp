@@ -1,0 +1,130 @@
+﻿@model WebApp.Models.ProjectDetails
+@using WebApp.Helpers
+@{
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+}
+@using (Html.BeginForm("AddProject", "Administration", FormMethod.Post, new { id = "add-project", enctype = "multipart/form-data" }))
+{   <a href="#" class="lightbox-close">&nbsp;</a>
+    <div data-after-remove="Administration/AddProject">
+        <div class="row title">
+            <span>@Helpers.GetTextConstant("Projects_AddLightbox_Title", LanguageId, "Προσθήκη νέας εργασίας")</span>
+        </div>
+        <div class="row">
+            <div class="col left">
+                <div class="label">
+                    <label for="Title">@Helpers.GetTextConstant("Projects_Lightbox_Name", LanguageId, "Project Title")</label>
+                </div>
+                <div class="field">
+                    <input name="Title" id="Title" type="text" value="" />
+                    <br />
+                    <div class="error">&nbsp;</div>
+                </div>
+            </div>
+            <div class="col right">
+                <div class="label">
+                    <label for="Subject">@Helpers.GetTextConstant("Projects_Lightbox_Subject", LanguageId, "Subject")</label>
+                </div>
+                <div class="field">
+                    <input name="Subject" id="Subject" type="text" value="" />
+                    <br />
+                    <div class="error">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="label">
+                <label for="Description">@Helpers.GetTextConstant("Projects_Lightbox_Description", LanguageId, "Project Description")</label>
+            </div>
+            <div class="field">
+                <textarea name="Description" cols="50" rows="5" id="Description"></textarea>
+                <br />
+                <div class="error">&nbsp;</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="label">
+                <label for="Info">@Helpers.GetTextConstant("Projects_Lightbox_Info", LanguageId, "Project Info")</label>
+            </div>
+            <div class="field">
+                <textarea name="Info" cols="50" rows="5" id="Info"></textarea>
+                <br />
+                <div class="error">&nbsp;</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col left">
+                <div class="label">
+                    <label for="StartDate">@Helpers.GetTextConstant("Projects_Lightbox_StartDate", LanguageId, "StartDate")</label>
+                </div>
+                <div class="field">
+                    <input name="StartDate" id="StartDate" type="text" value="" />
+                    <br />
+                    <div class="error">&nbsp;</div>
+                </div>
+            </div>
+            <div class="col right">
+                <div class="label">
+                    <label for="EndDate">@Helpers.GetTextConstant("Projects_Lightbox_EndDate", LanguageId, "EndDate")</label>
+                </div>
+                <div class="field">
+                    <input name="EndDate" id="EndDate" type="text" value="" />
+                    <br />
+                    <div class="error">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col left">
+                <div class="label">
+                    <label for="Type">@Helpers.GetTextConstant("Projects_Lightbox_Category", LanguageId, "Κατηγορία")</label>
+                </div>
+                <div class="field">
+                    @Html.DropDownList("Categories")
+                    <br />
+                    <div class="error">&nbsp;</div>
+                </div>
+                <div class="label">
+                    <label for="IsPaper">@Helpers.GetTextConstant("Projects_Lightbox_IsPaper", LanguageId, "IsPaper")</label>
+                </div>
+                <div class="field">
+                    <input type="checkbox" id="IsPaper" name="IsPaper" />
+                    <br />
+                    <div class="error">&nbsp;</div>
+                </div>
+            </div>
+            <div class="col right">
+                <div class="label">
+                    <label for="Type">@Helpers.GetTextConstant("Projects_Lightbox_Type", LanguageId, "Τύπος")</label>
+                </div>
+                <div class="field">
+                    @Html.DropDownList("Type")
+                    <br />
+                    <div class="error">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+        <p>
+            <input type="submit" value="@Helpers.GetTextConstant("Projects_Lightbox_AddBtn", LanguageId, "Προσθήκη")" />
+        </p>
+    </div>
+}
+<script type="text/javascript">
+    $('#add-project').ajaxForm({
+        dataType: "json",
+        success: function (data) {
+            var form = $('#add-project');
+            if (data.success == true) {
+                $('.lightbox').empty();
+                $('.lightbox').append(data.message);
+                setTimeout(function () { window.location.reload(); }, 1500);
+            }
+            else {
+                form.find('div.error').html('&nbsp;');
+                for (var i = 0; i < data.errors.length; i++) {
+                    var item = data.errors[i];
+                    form.find('input[name="' + item.field + '"]').parents('div.field').find('div.error').html(item.error);
+                }
+            }
+        }
+    });
+</script>

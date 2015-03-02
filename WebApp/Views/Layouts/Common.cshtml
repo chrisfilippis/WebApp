@@ -1,0 +1,84 @@
+﻿@using WebApp.Helpers
+@{
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+}
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/Styles/common.css" media="all">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" media="all">
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/common")
+    @Scripts.Render("~/bundles/calendar")
+    @*<script src="~/Scripts/jquery-2.0.0.js"></script>
+    <script src="~/Scripts/jquery-migrate-1.1.1.min.js"></script>*@
+    @*<script src="http://malsup.github.com/jquery.form.js"></script>*@
+    @*<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>*@
+    @*<script src="~/Scripts/Common.js"></script>*@
+</head>
+<body>
+    <div class="page">
+        <div class="header">
+            <a href="/home/welcome" title="Αρχική">
+                <img width="225" class="logo" height="100" src="/files/logo.png" alt="Αρχική">
+            </a>
+            <div class="options">
+                <ul class="lang">
+                    @if (LanguageId == 1)
+                    {
+                        <li><a href="javascript:void(0)">Ελληνικά</a></li>
+                        <li><a href="/en/home/welcome/">English</a></li>
+                    }
+                    else
+                    {
+                        <li><a href="javascript:void(0)">English</a></li>
+                        <li><a href="/gr/home/welcome/">Ελληνικά</a></li>
+                    }
+
+                </ul>
+                <ul class="account">
+                    <li>
+                        <span class="logout">
+                            @Html.ActionLink(HttpContext.Current.Session["UserName"].ToString(), "", "Profile", new { }, new { title = "Προφίλ" }) / @Html.ActionLink("LogOut", "LogOut", "Profile", new { }, new { id = "logout", title = "LogOut" })
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="mega-menu">
+            <div class="container">
+                <div class="clearfix">
+                    <ul class="main-menu">
+                        <li>@Html.ActionLink(Helpers.GetTextConstant("Main_Menu_Home", @LanguageId, "Αρχική"), "Welcome", "Home", new { }, new { title = Helpers.GetTextConstant("Main_Menu_Home", @LanguageId, "Αρχική") })</li>
+                        <li>@Html.ActionLink(Helpers.GetTextConstant("Main_Menu_My_List", @LanguageId, "Η λίστα μου"), "", "List", new { }, new { title = Helpers.GetTextConstant("Main_Menu_My_List", @LanguageId, "Η λίστα μου") })</li>
+                        <li>@Html.ActionLink(Helpers.GetTextConstant("Main_Menu_My_Profile", @LanguageId, "Προφίλ"), "", "Profile", new { }, new { title = Helpers.GetTextConstant("Main_Menu_My_Profile", @LanguageId, "Προφίλ") })</li>
+                        <li>@Html.ActionLink(Helpers.GetTextConstant("Main_Menu_Announcements", @LanguageId, "Ανακοινώσεις"), "", "Announcements", new { }, new { title = Helpers.GetTextConstant("Main_Menu_Announcements", @LanguageId, "Ανακοινώσεις") })</li>
+                        <li><a target="_blank" href="@(LanguageId == 1 ? "http://netlab.cs.unipi.gr/el" : "http://netlab.cs.unipi.gr/en")">Netlab Site</a></li>
+                        @if (Convert.ToInt32(HttpContext.Current.Session["UserGroupId"] ?? "0") == 1)
+                        {
+                            <li>@Html.ActionLink(Helpers.GetTextConstant("Main_Menu_Administration", @LanguageId, "Administration"), "", "Administration", new { }, new { title = Helpers.GetTextConstant("Main_Menu_Administration", @LanguageId, "Administration") })</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        @RenderBody()
+    </div>
+    <div class="calendar">
+        <div class="hover">
+            @Helpers.GetTextConstant("Calendar", LanguageId, "Ημερολόγιο")
+        </div>
+        <div class="inner">
+            <div class="text">
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        @Html.Raw(string.Format("var calendarData = {0}", Newtonsoft.Json.JsonConvert.SerializeObject(WebApp.Utilities.UserUtilities.UserEvents(Context))))
+    </script>
+</body>
+</html>

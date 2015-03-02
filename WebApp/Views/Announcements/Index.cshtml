@@ -1,0 +1,21 @@
+﻿@model WebApp.Models.AnnouncementObject[]
+@using WebApp.Helpers
+@{
+    ViewBag.Title = "Announcements";
+    Layout = "~/Views/Layouts/Common.cshtml";
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+}
+
+@helper GetView()
+{
+    Html.RenderPartial("Announcements", Model ?? new WebApp.Models.AnnouncementObject[] { });
+}
+<div class="general">
+    <h1 class="page-title">@Helpers.GetTextConstant("Announcements_Title", @LanguageId, "Ανακοινώσεις")</h1>
+    <div class="main">
+        <div class="project">
+            @GetView()
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/Project.js"></script>

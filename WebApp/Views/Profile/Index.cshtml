@@ -1,0 +1,124 @@
+﻿@model WebApp.Models.ProfileDetails
+@using WebApp.Helpers
+@{
+    ViewBag.Title = "My Profile";
+    Layout = "~/Views/Layouts/Common.cshtml";
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+}
+
+@helper  FormatDate(DateTime date)
+{
+    var finalString = string.Empty;
+    var i = date.ToString("ddMMyyyy");
+    var j = DateTime.Now.ToString("ddMMyyyy");
+    if (i == j)
+    {
+        finalString += "σήμερα";
+    }
+    else
+    {
+        finalString += date.ToString("dd MMM yyyy");
+    }
+
+    finalString += " " + date.ToString("HH:mm");
+    @(new MvcHtmlString(finalString));
+}
+
+<div class="general">
+    <div class="main profile">
+        <div class="info">
+            <div>
+                @if (HttpContext.Current.Session["UserId"].ToString() == Model.User.userId.ToString())
+                {
+                    <a class="change-photo" href="#">@Helpers.GetTextConstant("Profile_Change_Picture", LanguageId, "Αλλαγή")</a>
+                }
+                @if (string.IsNullOrWhiteSpace(Model.User.userImage))
+                {
+                    <img src="/files/UserPictures/anonymous.jpeg" width="200" height="200" />
+                }
+                else
+                {
+                    <img src="@Model.User.userImage" width="200" height="200" />
+                }
+            </div>
+            <ul class="user-menu">
+                <li class="active"><a id="my-projects" href="#">@Helpers.GetTextConstant("Profile_Change_Projects", LanguageId, "Projects")</a></li>
+                @if (HttpContext.Current.Session["UserId"].ToString() == Model.User.userId.ToString())
+                {
+                    <li><a id="remind-password" href="#">@Helpers.GetTextConstant("Profile_Change_Password", LanguageId, "Αλλαγή Κωδικού")</a></li>
+                }
+            </ul>
+        </div>
+        <div class="content">
+            <div class="details">
+                <h1>@Model.User.userName</h1>
+                <span>@Helpers.GetTextConstant("Profile_Registered_On", LanguageId, "Εγγραφή: ")@Model.User.userRegistrationDate.ToString("dd MMM yyyy")</span><br />
+                @*<span class="light">@Helpers.GetTextConstant("Profile_Registered_On", LanguageId, "Τελ. Ενέργεια: ")@FormatDate(Model.User.userLastVisitDate)</span>*@
+            </div>
+            <div class="list my-projects">
+                <h3 class="title">Projects</h3>
+                <ul>
+                    @foreach (var project in Model.Projects)
+                    {
+                        <li>@Html.ActionLink(project.prTitle, "Index", "Project", new { id = project.prId }, new { title = project.prTitle })</li>
+                    }
+                </ul>
+            </div>
+            <div class="list remind-password" style="display: none;">
+                <h3 class="title">@Helpers.GetTextConstant("Profile_Change_Password", LanguageId, "Αλλαγή Κωδικού Πρόσβασης")</h3>
+                <div class="row">
+                    <div class="label">
+                        <label for="user-old-pass">@Helpers.GetTextConstant("Profile_Old_Password", LanguageId, "Παλιός Κωδικός")</label>
+                    </div>
+                    <div class="field">
+                        <input id="user-old-pass" name="old-pass" type="password" />
+                        <br />
+                        <div class="error">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="label">
+                            <label for="user-new-pass">@Helpers.GetTextConstant("Profile_New_Password", LanguageId, "Νέος Κωδικός")</label>
+                        </div>
+                        <div class="field">
+                            <input id="user-new-pass" name="new-pass" type="password" />
+                            <br />
+                            <div class="error">&nbsp;</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="label">
+                            <label for="user-confirm-pass">@Helpers.GetTextConstant("Profile_Confirm_Password", LanguageId, "Επιβεβαίωση Κωδικός")</label>
+                        </div>
+                        <div class="field">
+                            <input id="user-confirm-pass" name="confirm-pass" type="password" />
+                            <br />
+                            <div class="error">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="submit">
+                        <input type="submit" class="nostyle" value="@Helpers.GetTextConstant("Profile_Save_Changes", LanguageId, "Αποθήκευση Αλλαγών")">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/Project.js"></script>
+<script lang="JavaScript">
+    $('a.change-photo').click(function (e) {
+        e.preventDefault();
+        ShowModal();
+        if ($('body .lightbox input').length == 0) {
+            $('body .lightbox').load('@Url.Action("ChangeImage", "Profile")');
+        }
+        $('body .lightbox').fadeIn();
+        //$.get('Profile/ChangeImage', function (data) {
+
+        //    alert('Load was performed.');
+        //});
+    });
+</script>

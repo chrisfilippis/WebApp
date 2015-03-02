@@ -1,0 +1,25 @@
+﻿@model WebApp.Projects[]
+@using WebApp.Helpers
+
+@{
+    var LanguageId = WebApp.Utilities.LanguageResolver.GetLanguage(ViewContext.RouteData.Values["language"]);
+}
+
+<div class="admin-list" data-type="projects">
+    <span class="invite">
+        <a class="invite-btn" data-view="Administration/AddProject" href="#" title="Προσθήκη καινούριου Project">
+            <img src="/files/add.png" width="32" height="32" />
+        </a>
+    </span>
+    <ul>
+        @foreach (var project in Model)
+        {
+            <li data-prid="@project.prId">@Html.ActionLink(project.prTitle, "", "Project", new { id = project.prId }, new { title = project.prTitle })
+                <a href="Administration/DeleteProject/@project.prId" title="@Helpers.GetTextConstant("Admin_Project_Delete", LanguageId, "Διαγραφή Project")" class="delete" data-prid="@project.prId">
+                    <img src="~/files/remove.png" width="16" height="16" /></a>
+                <a href="#" data-view="Administration/EditProject/@project.prId" title="@Helpers.GetTextConstant("Admin_Project_Edit", LanguageId, "Επεξεργασία Project")" class="edit" data-prid="@project.prId">
+                    <img src="~/files/edit-button.png" width="16" height="16" /></a>
+            </li> 
+        }
+    </ul>
+</div>
